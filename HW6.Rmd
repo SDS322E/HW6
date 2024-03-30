@@ -1,0 +1,240 @@
+---
+title: "HW 6"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,  
+                      warning = FALSE, message = FALSE, 
+                      fig.align = "center",
+                      R.options = list(max.print=100))
+
+# Edit the file starting below
+```
+
+### Enter your name and EID here:
+
+**You will submit this homework assignment as a pdf file on Gradescope.**
+
+*For all questions, include the R commands/functions that you used to find your answer (show R chunk). Answers without supporting code will not receive credit. Write full sentences to describe your findings.*
+
+We will use the packages `tidyverse`, `factoextra`, and `cluster` for this assignment.
+
+```{r, message = FALSE}
+# Load packages
+library(tidyverse)
+library(factoextra)
+library(cluster)
+```
+
+------------------------------------------------------------------------
+
+## Question 1: (2 pts)
+
+The dataset for this homework comes from the article:
+
+*Tsuzuku N, Kohno N. 2020. The oldest record of the Steller sea lion Eumetopias jubatus (Schreber, 1776) from the early Pleistocene of the North Pacific. <https://doi.org/10.7717/peerj.9709>*
+
+Read the ***Abstract*** of the article and the section called *Results of Morphometric Analyses*. What was the goal of this study and what was the main finding?
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 2: (1 pt)
+
+Under the supplemental information, I retrieved the data from a word document into a `.csv` document. Read in the dataset. 
+
+```{r}
+# download data from GitHub
+sealions <- read_csv("Sealions.csv")
+```
+
+How many rows and how many columns are in this dataset? What does a row represent? What does a column represent?
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 3: (1 pt)
+
+Before we can analyze the data, let's do some cleaning. Using a combination of the `select()`, `where()`, and a predicate function like `is.character()` we can scan through all the columns of the dataset and see which columns are of character type.
+
+```{r}
+## Select all of the columns that have character type
+sealions |> 
+    select(where(is.character))
+```
+
+When importing this dataset into RStudio, which variables were considered numeric? Use the `is.numeric()` predicate function here. 
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+Take a look at one of the character columns. Why are some measurements not considered as numeric? 
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 4: (1 pt)
+
+The functions `mutate()` and `across()`, when used together, can make changes across a range of columns in a data frame. 
+
+Using `mutate()` and `across()`, replace all `-` in the dataset with the missing values *NA* and then then make sure all measurements are defined as numeric variables with `as.numeric()`. The first part of the code replaces the "-" with NA values. Write the second part to coerce all of the columns (except for the ID column!) to be numeric. Make sure to overwrite the dataset `sealions`. 
+
+NOTE: Look at the examples in `?across` to get a sense of how to use the `across()` function.
+
+```{r}
+# your code goes below (make sure to edit comment)
+sealions |> 
+    ## Replace all "-" with NA
+    mutate(across(where(is.character), ~ na_if(.x, "-"))) |> 
+    ## Coerce all columns (except for ID) to be numeric
+```
+
+What is the mean rostral tip of mandible `C`?
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 5: (2 pts)
+
+You are given the code in this question. But what does the code do? Write comments.
+
+```{r}
+sealions <- sealions |> 
+  ## 
+  select_if(!is.na(sealions[51,])) |> 
+  ## 
+  na.omit()
+```
+
+How many columns and how many rows are remaining in this dataset?
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 6: (2 pts)
+
+Use the `separate()` function on `sealions` to split the `ID` variable into two variables `species` and `sex`. The article states that the fossil specimen has to be male. Replace the missing value of `sex` for the fossil specimen GKZ-N 00001. 
+
+*Hint: in the `ID` variable, what symbol separates the species from sex?* 
+
+*Hint: You could use the functions `mutate()` and `replace_na()`.* 
+
+*Hint: When separating by a special character like `[`, you need to escape it using a `\\`*
+
+Save the resulting dataset as `sealions_clean`.
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+How many sealions are male/female?
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 7: (1 pt)
+
+Using `dplyr` functions, only keep numeric variables and scale each numeric variable. Save the resulting dataset as `sealions_num`. What should the mean of the scaled variable of the rostral tip of mandible C be?
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 8: (2 pts)
+
+Let's  perform PCA on the measurements available for the fossil specimen GKZ-N 00001. Using the function `prcomp()`, calculate the principal components (PCs) for the scaled data, `sealions_num`, obtained in the previous question. Construct a scree plot with the function `fviz_eig()` from the package `factoextra`. What is the cumulative percentage of explained variance for PC1 and PC2? 
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 9: (2 pts)
+
+How many *known species* are there in `sealions_clean`? Therefore, how many clusters should we look for to identify what species GKZ-N 00001 most likely belongs to? 
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+**Your answer goes here. Write sentences in bold.**
+
+Try using the PAM clustering algorithm using the `pam()` function in R (it is similar to K-means). Perform the PAM clustering algorithm on `sealions_num`, run the PAM clustering algorithm with 3 clusters and save the results to an object named `pam_results`.
+
+```{r}
+# your code goes below (make sure to edit comment)
+ 
+```
+
+------------------------------------------------------------------------
+
+## Question 10: (2 pts)
+
+Represent the clusters along the first two principal components and specify to shape the observations by their `species` in the aesthetics. *Note: you can either use `ggplot` or `fviz_cluster()`.* 
+
+```{r}
+# your code goes below (make sure to edit comment)
+fviz_cluster(pam_results, geom = NULL) +  ## Add geoms to complete the plot
+```
+
+The fossil specimen GKZ-N 00001 appears to be close to which species? 
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Question 11: (2 pts)
+
+Putting it all together. Reflect on and summarize in 1-2 sentences the different steps taken through this assignment. Compare your conclusions to the findings discussed by the researchers in the article (cite their findings).
+
+**Your answer goes here. Write sentences in bold.**
+
+------------------------------------------------------------------------
+
+## Formatting: (2 pts)
+
+Comment your code, write full sentences, and knit your file!
+
+------------------------------------------------------------------------
+
+```{r, echo=F}
+## DO NOT DELETE THIS BLOCK!
+Sys.info()
+```
