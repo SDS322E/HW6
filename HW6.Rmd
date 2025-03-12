@@ -230,7 +230,7 @@ Putting it all together. Reflect on and summarize in 1-2 sentences the different
 
 ## Formatting: (2 pts)
 
-Comment your code, write full sentences, and knit your file!
+Comment your code, write full sentences, knit your file, and select all appropriate pages in Gradescope for each question!
 
 ------------------------------------------------------------------------
 
