@@ -161,7 +161,7 @@ How many sealions are male/female?
 
 ## Question 7: (1 pt)
 
-Using `dplyr` functions, only keep numeric variables and scale each numeric variable. Save the resulting dataset as `sealions_num`. What should the mean of the scaled variable of the rostral tip of mandible C be?
+Using `tidyverse` functions, only keep numeric variables and scale each numeric variable. Save the resulting dataset as `sealions_num`. What should the mean of the scaled variable of the rostral tip of mandible C be?
 
 ```{r}
 # your code goes below (make sure to edit comment)
@@ -230,7 +230,7 @@ Putting it all together. Reflect on and summarize in 1-2 sentences the different
 
 ## Formatting: (2 pts)
 
-Comment your code, write full sentences, knit your file, and select all appropriate pages in Gradescope for each question!
+Comment your code, write full sentences, and knit your file!
 
 ------------------------------------------------------------------------
 
